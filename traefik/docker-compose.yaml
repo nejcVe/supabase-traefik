@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: "traefik:2.10"
+    container_name: "traefik"
+    restart: always
+    logging:
+      options:
+        max-size: 500m
+        max-file: "5"
+    command:
+      # define log level. By default it is written to STDOUT and level is ERROR
+      - "--log.level=DEBUG"
+      # enable api and dashboard
+      - "--api"
+      # define docker as provider (docker swarm is a different provider)
+      - "--providers.docker=true"
+      # Dont expose containers by default
+      - "--providers.docker.exposedbydefault=false"
+      # define entry ports and automaticaly reddirect http to https
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      # define lets encrypt as an automatic cerftificate provider
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # Staging server for lets encrypt. Use it when testing, so you do not hit certificate creation limits
+      # - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      # Save tracing to elastic search
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      # Define a basic authentication middleware 
+      - "traefik.http.middlewares.auth.basicauth.users=${BASIC_AUTH_CREDS}"
+      - "traefik.http.middlewares.auth.basicauth.removeheader=true"
+      # Define an ip whitelists middleware for http and tcp
+      - "traefik.http.middlewares.work-whitelist.ipwhitelist.sourcerange=${WHITELIST_IPS}"
+      - "traefik.tcp.middlewares.work-whitelist.ipwhitelist.sourcerange=${WHITELIST_IPS}"
+      # Define an entrypoint and domain for this router and add a service to it
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.rule=Host(`${TRAEFIK_HOST}`)"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      # Use/enable the previously defined basic auth middleware on this router
+      - "traefik.http.routers.dashboard.middlewares=auth,work-whitelist"
+
+volumes:
+  letsencrypt:
+    name: letsencrypt
+
+networks:
+  traefik:
+    driver: bridge
+    name: traefik
