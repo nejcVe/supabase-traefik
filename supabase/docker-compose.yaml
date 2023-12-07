@@ -44,7 +44,7 @@ services:
       DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION}
       DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
 
-      SUPABASE_URL: ${SITE_URL}
+      SUPABASE_URL: https://${SUPABASE_HOST}
       SUPABASE_PUBLIC_URL: https://${SUPABASE_HOST}
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
@@ -129,7 +129,7 @@ services:
 
       # Auth providers example:
       # GOTRUE_EXTERNAL_GOOGLE_ENABLED: true
-      # GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${SITE_URL}/auth/v1/callback
+      # GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: https://${SUPABASE_HOST}/auth/v1/callback
       # GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: id
       # GOTRUE_EXTERNAL_GOOGLE_SECRET: secret
 
@@ -348,7 +348,7 @@ services:
       - "traefik.http.services.functions.loadbalancer.server.port=9000"
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: ${SITE_URL}
+      SUPABASE_URL: https://${SUPABASE_HOST}
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
       SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
