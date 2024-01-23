@@ -317,7 +317,7 @@ services:
       - "traefik.http.routers.meta.rule=Host(`${SUPABASE_HOST}`) && PathPrefix(`/pg`)"
       - "traefik.http.middlewares.meta-rx.replacepathregex.regex=^/pg(.*)"
       - "traefik.http.middlewares.meta-rx.replacepathregex.replacement=$$1"
-      - "traefik.http.routers.rest.middlewares=meta-rx"
+      - "traefik.http.routers.meta.middlewares=meta-rx"
       - "traefik.http.routers.meta.tls.certresolver=letsencrypt"
       - "traefik.http.services.meta.loadbalancer.server.port=8080"
     environment:
@@ -343,7 +343,7 @@ services:
       - "traefik.http.routers.functions.rule=Host(`${SUPABASE_HOST}`) && PathPrefix(`/functions/v1`)"
       - "traefik.http.middlewares.functions-rx.replacepathregex.regex=^/functions/v1(.*)"
       - "traefik.http.middlewares.functions-rx.replacepathregex.replacement=$$1"
-      - "traefik.http.routers.rest.middlewares=functions-rx"
+      - "traefik.http.routers.functions.middlewares=functions-rx"
       - "traefik.http.routers.functions.tls.certresolver=letsencrypt"
       - "traefik.http.services.functions.loadbalancer.server.port=9000"
     environment:
@@ -388,7 +388,7 @@ services:
       - "traefik.http.routers.analytics.rule=Host(`${SUPABASE_HOST}`) && PathPrefix(`/analytics/v1`)"
       - "traefik.http.middlewares.analytics-rx.replacepathregex.regex=^/analytics/v1(.*)"
       - "traefik.http.middlewares.analytics-rx.replacepathregex.replacement=$$1"
-      - "traefik.http.routers.rest.middlewares=analytics-rx"
+      - "traefik.http.routers.analytics.middlewares=analytics-rx"
       - "traefik.http.routers.analytics.tls.certresolver=letsencrypt"
       - "traefik.http.services.analytics.loadbalancer.server.port=4000"
     environment:
