@@ -76,6 +76,8 @@ This part is used to configure the Traefik's service labels
 - `SUPABASE_HOST` - the address you want to use for Supabase (e.g. `supabase.example.net`)
 - `SUPABASE_BASIC_AUTH_CREDS` - credentials for Basic Authentication to access Supabase Studio
   - generated the same way as `BASIC_AUTH_CREDS` in the Traefik setup
+- `FRONTEND_APP_URL` - list of frontend app url that will use Auth endpoints, used for returning CORS headers
+  - default value for development: `*`
 
 #### Database
 

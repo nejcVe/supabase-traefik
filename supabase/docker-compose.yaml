@@ -90,7 +90,10 @@ services:
       - "traefik.http.routers.supabase-auth.tls.certresolver=letsencrypt"
       - "traefik.http.middlewares.supabase-auth-rx.replacepathregex.regex=^/auth/v1(.*)"
       - "traefik.http.middlewares.supabase-auth-rx.replacepathregex.replacement=$$1"
-      - "traefik.http.routers.supabase-auth.middlewares=supabase-auth-rx"
+      - "traefik.http.middlewares.supabase-auth-cors.headers.accesscontrolalloworiginlist=${FRONTEND_APP_URL}"
+      - "traefik.http.middlewares.supabase-auth-cors.headers.accesscontrolallowmethods=GET,OPTIONS,POST,PATCH"
+      - "traefik.http.middlewares.supabase-auth-cors.headers.accesscontrolallowheaders=apikey,authorization,content-type,x-client-info"
+      - "traefik.http.routers.supabase-auth.middlewares=supabase-auth-rx,supabase-auth-cors"
       - "traefik.http.services.supabase-auth.loadbalancer.server.port=9999"
     environment:
       GOTRUE_API_HOST: 0.0.0.0
